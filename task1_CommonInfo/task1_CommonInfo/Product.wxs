@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="task1_CommonInfo" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="97028dd3-6ab9-4122-a8a0-a347be02bd28">
+	<Product Id="*" Name="task1_CommonInfo" Language="1058" Version="1.0.0.0" Manufacturer="" UpgradeCode="97028dd3-6ab9-4122-a8a0-a347be02bd28">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -9,6 +9,12 @@
 		<Feature Id="ProductFeature" Title="task1_CommonInfo" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
+
+    <!-- Set variable that save installation path choosed by user -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+    <!-- Use set of interface element for installation from WixUI_InstallDir that located in WixUIExtension.dll -->
+    <UIRef Id="WixUI_InstallDir"/>
+    
 	</Product>
 
 	<Fragment>
