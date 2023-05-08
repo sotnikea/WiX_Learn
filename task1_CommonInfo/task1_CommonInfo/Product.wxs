@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="task1_CommonInfo" Language="1058" Version="1.0.0.0" Manufacturer="" UpgradeCode="97028dd3-6ab9-4122-a8a0-a347be02bd28">
+  <?define ProductName="task1_CommonInfo" ?>
+  <?define ProductVersion="1.0.0.0" ?>
+  <?define ProductId="93011000-273F-4B2A-B79A-271A0B0ACC3A"?>
+  <?define ProductUpgradeCode="31027AFD-BA1E-4D04-8144-BA4E2DF294BE"?>
+  <?define ProductManufacturer="MyCompany"?>
+  
+	<Product Id="$(var.ProductId)" Name="$(var.ProductName)" Language="1058" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductManufacturer)" UpgradeCode="$(var.ProductUpgradeCode)">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate />
 
-		<Feature Id="ProductFeature" Title="task1_CommonInfo" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
+		<Feature Id="ProductFeature" Title="$(var.ProductName)" Level="1">
+			<ComponentGroupRef Id="CalculatorComponent" />
 		</Feature>
 
     <!-- Set variable that save installation path choosed by user -->
@@ -19,18 +25,36 @@
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
+      
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="task1_CommonInfo" />
+				<Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
 			</Directory>
+
+      <!-- Directory where Start menu shortcuts are located -->
+      <Directory Id="ProgramMenuFolder">
+        <!-- All Programs section of the Start menu -->
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
+          
+          <Component Id="ApplicationShortcutCalc" Guid="4CEBD68F-E933-47f9-B02C-A4FC69FDB551">
+            <Shortcut Id="ShortcutCalc"
+                 Name="Calc"
+                 Description="$(var.ProductName)"
+                 Target="[INSTALLLOCATION]Calc.exe"
+                 WorkingDirectory="INSTALLLOCATION"/>
+            <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+      
 		</Directory>
 	</Fragment>
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
+			 <Component Id="CalculatorComponent" Guid="52793640-1944-4A19-9337-0B9760C54E95">
+         <File Id='Calc' Source='C:\WINDOWS\system32\calc.exe'/>
+			 </Component> 
 		</ComponentGroup>
 	</Fragment>
 </Wix>
