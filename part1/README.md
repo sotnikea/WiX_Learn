@@ -8,7 +8,8 @@
     - [Самостійне додавання - НЕ РОЗГЛЯНУТО](#r5_1)
     - [Використання готового набору](#5_2)
 5. [Макроси препроцесору (змінні)](#6)
-6. [Посилання](#r7)
+6. [Створення ярлика](#r7)
+6. [Посилання](#r15)
 ______
 
 
@@ -298,7 +299,60 @@ SomeAttribute="$(var.Назва_змінної)"
 <Product Id="*" Name="SomeProj" Language="1058" Version="$(var.ProductVersion)" Manufacturer="" UpgradeCode="97028dd3-6ab9-4122-a8a0-a347be02bd28">
 ~~~
 
-## <a name="r7">Посилання</a>
+## <a name="r7">Створення ярлика</a>
+Для створення ярлика в меню Пуск необхідно наступне
+- Задати директорією створення `ProgramMenuFolder`
+- Створити підрозділ для свого продукту за допомогою `ApplicationProgramsFolder` та назви цієї директорії (зазвичай визначається макросом)
+- Задати компонент та заповнити його елементом `Shortcut`
+- Задекларувати, що дана директорія має бути видалена в разі деінсталяції продукту за допомогою `RemoveFolder`
+- [Опціонально] Додати в реєстр ключ з інформацією про те, що продукт встановлений (або присутній його ярлик в меню пуск)
+
+Приблизний приклад того, як це може виглядати:
+~~~wxs
+<!-- Set shortcuts for our product -->
+      <!-- Directory where Start menu shortcuts are located -->
+      <Directory Id="ProgramMenuFolder">
+        <!-- All Programs section of the Start menu -->
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">     
+          <!-- Set component for shortcut (must be defined in feature) -->
+          <Component Id="SomeApplicationShortcut" Guid="4CEBD68F-E933-47f9-B02C-A4FC69FDB551">
+            <!-- Set component element - in this case it shortcut -->
+            <Shortcut Id="ShortcutSomeProgram"
+                 Name="SomeProgram"
+                 Description="$(var.ProductName)"
+                 Target="[INSTALLLOCATION]SomeProgram.exe"
+                 WorkingDirectory="INSTALLLOCATION"/>
+            <!-- Define that directory must be delete in case of uninstall product -->
+            <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+            <!-- Set in registry information about install status -->
+            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>>
+~~~
+Розберемо детальніше:
+- `<Directory Id="ProgramMenuFolder">` - місцем розташування задається папка "Всі програми" в меню пуск
+- `<Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">`
+    - `ApplicationProgramsFolder` - створює підпапку для продукту у папці "Всі програми"
+	- `Name="$(var.ProductName)"` - задає ім'я папки (в даному випадку ім'я визначене в макросі ProductName)
+- `<Component Id="SomeApplicationShortcut" Guid="7435E631-0BBD-4FDC-8B19-9C972DEB49D8">` - налаштовуємо компонент, що має бути розміщеним у обраній директорії
+    - `SomeApplicationShortcut` - id компоненту, він має бути оголошений у блоці `ComponentRef` десь у програмі з тим самим id
+    - `Guid` - унікальний код, необхідно згенерувати самостійно
+- `Shortcut Id="ShortcutSomeProgram"` - елемент, що встановлюється у вказаному компоненті. В даному випадку цим елементом є ярлик
+    - `Name` - унікальний ідентифікатор ярлика
+    - `Description` - опис продукту, в даному випадку в ньому просто виводиться назва цього продукту збережена у змінній ProductName
+    - `Target` - для якої програми створюється ярлик, в даному випадку INSTALLLOCATION містить шлях до папки, куди вона встановлена
+    - `WorkingDirectory` - робоча директорія, в якій буде виконуватись програма. Зазвичай це та сама директорія в якій знаходиться сама програма
+- `RemoveFolder` - по суті відповідає за видалення папки. Але в парі з атрибутом On="uninstall" автоматично запустить видалення папки `ApplicationProgramsFolder` під час видалення програми
+- `RegistryValue` - зберігає в реєстр необхідні дані, наприклад це може бути зміна, що містить статус встановлення програми
+    - `Root` - гілка реєстру куди буде збережене значення, в даному випадку HKCU це HKEY_CURRENT_USER
+    - `Key`- шлях до ключа реєстру, в якому буде створено запис
+    - `Name` - ім'я значення, яке буде створено в реєстрі
+    - `Type`- тип значення, яке буде зберігатися в реєстрі
+    - `Value` - значення, яке буде збережено в реєстрі
+	- `KeyPath` - вказує, що цей запис в реєстрі є ключовим для компонента, який він представляє. Це означає, що інсталяційний пакет використовує цей запис для визначення наявності компонента на комп'ютері.
+
+## <a name="r15">Посилання</a>
 1. Стаття на хабрі: "Створення інсталятора за допомогою WiX. Частина 1" - https://habr.com/ru/articles/68616/
 2. Послідовність встановлення WiX - https://www.educba.com/install-wix/ 
 3. Документація по Product - https://wixtoolset.org/docs/v3/xsd/wix/product/
