@@ -1,60 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductName="task1_CommonInfo" ?>
+<?xml version="1.0" encoding="UTF-8"?> <!-- Say xml parser what to do with file -->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"> <!-- Say that this file is wix file -->
+
+  <!-- Define some variables that we use more then once -->
+  <?define ProductName="WixStudyProject" ?> 
   <?define ProductVersion="1.0.0.0" ?>
   <?define ProductId="93011000-273F-4B2A-B79A-271A0B0ACC3A"?>
   <?define ProductUpgradeCode="31027AFD-BA1E-4D04-8144-BA4E2DF294BE"?>
   <?define ProductManufacturer="MyCompany"?>
-  
+
+  <!-- Set information about product -->
+  <!-- Id - unique GUID that must be generated -->
+  <!-- Name - product name -->
+  <!-- Language - language code of product -->
+  <!-- Version - used for upgrade -->
+  <!-- Manufacturer - who create product, company name -->
+  <!-- UpgradeCode - used for upgrade -->
 	<Product Id="$(var.ProductId)" Name="$(var.ProductName)" Language="1058" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductManufacturer)" UpgradeCode="$(var.ProductUpgradeCode)">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
+    <!-- Package settings -->
+    <Package InstallerVersion="200" Compressed="yes" />
+
+    <!-- Used for upgrade -->
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
 
+    <!-- Structure of file in the instaler -->
+    <MediaTemplate />
+
+    <!-- Feature that must be installed -->
 		<Feature Id="ProductFeature" Title="$(var.ProductName)" Level="1">
-			<ComponentGroupRef Id="CalculatorComponent" />
+			<ComponentRef Id="CalculatorComponent" />
+			<ComponentRef Id="ApplicationShortcutCalc" />
 		</Feature>
 
+    <!-- Setting up windows for installation process -->
     <!-- Set variable that save installation path choosed by user -->
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+    <!-- License is neccessary when use windows from constructor -->
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
     <!-- Use set of interface element for installation from WixUI_InstallDir that located in WixUIExtension.dll -->
     <UIRef Id="WixUI_InstallDir"/>
     
 	</Product>
 
+  
+  
+  <!-- Elements that used during installation -->
 	<Fragment>
+
+    <!-- Root folder of installation -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
       
+      
+      <!-- Set location for main part of product -->
+      <!-- Reference to ProgramFiles folder -->
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
-			</Directory>
-
+        <!-- Create subdirectory in Program Files and set name as product name-->
+				<Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <!-- Set component name which must be placed here -->
+          <Component Id="CalculatorComponent" Guid="52793640-1944-4A19-9337-0B9760C54E95" KeyPath="yes">
+            <!-- Set component element -->
+            <File Id='Calc' Source='C:\WINDOWS\system32\calc.exe'/>
+			    </Component> 
+			  </Directory>      
+      </Directory>
+      
+      
+      <!-- Set shortcuts for our product -->
       <!-- Directory where Start menu shortcuts are located -->
       <Directory Id="ProgramMenuFolder">
         <!-- All Programs section of the Start menu -->
-        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
-          
-          <Component Id="ApplicationShortcutCalc" Guid="4CEBD68F-E933-47f9-B02C-A4FC69FDB551">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">     
+          <!-- Set component for shortcut (must be defined in feature) -->
+          <Component Id="ApplicationShortcutCalc" Guid="7435E631-0BBD-4FDC-8B19-9C972DEB49D8">
+            <!-- Set component element - in this case it shortcut -->
             <Shortcut Id="ShortcutCalc"
                  Name="Calc"
                  Description="$(var.ProductName)"
                  Target="[INSTALLLOCATION]Calc.exe"
                  WorkingDirectory="INSTALLLOCATION"/>
+            <!-- Define that directory must be delete in case of uninstall product -->
             <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            <!-- Set in registry information about install status -->
+            <RegistryValue Root="HKCU" Key="Software\$(var.ProductManufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
           </Component>
         </Directory>
       </Directory>
       
+      
+      
 		</Directory>
 	</Fragment>
 
+
+  <!-- Element that must be installed -->
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			 <Component Id="CalculatorComponent" Guid="52793640-1944-4A19-9337-0B9760C54E95">
-         <File Id='Calc' Source='C:\WINDOWS\system32\calc.exe'/>
-			 </Component> 
-		</ComponentGroup>
+		
+			 
+
 	</Fragment>
 </Wix>
