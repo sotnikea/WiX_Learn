@@ -127,5 +127,19 @@ GUID для Id та UpgradeCode згенерував за допомогою VS.
 
 Робимо білд, запускаємо його та отримуємо наступний набір UI:   
 Початок інсталяції:   
-![img1](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo
-/img/img1.png)  
+![img1](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img1.png)  
+
+Ліцензійна угода:   
+![img2](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img2.png) 
+
+Шлях встановлення:   
+![img3](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img1.png) 
+
+Початок інсталяції:   
+![img4](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img4.png) 
+
+Завершення інсталяції:   
+![img5](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img5.png) 
+
+Результат:   
+![img6](https://github.com/sotnikea/WiX_Learn/raw/main/task1_CommonInfo/img/img6.png) 
