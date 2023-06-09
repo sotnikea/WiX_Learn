@@ -55,7 +55,7 @@
       <!-- Reference to ProgramFiles folder -->
 			<Directory Id="ProgramFilesFolder">
         <!-- Create subdirectory in Program Files and set name as product name-->
-				<Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+				<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
           <!-- Set component name which must be placed here -->
           <Component Id="CalculatorComponent" Guid="52793640-1944-4A19-9337-0B9760C54E95" KeyPath="yes">
             <!-- Set component element -->
@@ -89,13 +89,5 @@
       
       
 		</Directory>
-	</Fragment>
-
-
-  <!-- Element that must be installed -->
-	<Fragment>
-		
-			 
-
 	</Fragment>
 </Wix>
