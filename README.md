@@ -4,5 +4,5 @@
     + [Інформація](part1/)
     + [Завдання 1](task1_CommonInfo/)
 
-Додатково
+Додатково   
     + [PluralSight](pluralsight/)
