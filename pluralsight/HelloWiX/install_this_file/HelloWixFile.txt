@@ -1,0 +1,1 @@
+This file must installed to program files/HelloWix

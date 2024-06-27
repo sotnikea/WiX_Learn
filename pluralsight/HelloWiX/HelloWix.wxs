@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>  <!-- Standart XML declaration -->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">  <!-- Top level WiX element -->
+
+  <!-- Product element is a child of top level element -->
+  <!-- Product element compile and link into msi file -->
+  <Product Id="*" Language="1033" Manufacturer="TestInk" Name="HelloWix" Version="1.0.0" UpgradeCode="1D74C6D1-9DC4-484D-A23B-8B0A5B627515">
+
+    <!-- Properties shown as summary in msi -->
+    <Package Description="Simple Demo" Compressed="yes"/>
+
+    <!-- Automaticly assign files to the cabinet (it use to store all the files in the application) -->
+    <MediaTemplate EmbedCab="yes"/>
+
+    <!-- Specify where to install app and how to break product into component and features -->
+    <Directory Id="TARGETDIR" Name="SourceDir">      
+      <!-- Try to instal in subdirectory of program files -->
+      <Directory Id="ProgramFilesFolder">
+        <!-- Set installation folder -->
+        <Directory Id="INSTALLFOLDER" Name="HelloWix"/>
+      </Directory>
+    </Directory>
+
+    <!-- Each file we want to install good to represent by its own component -->
+    <Component Id="TextFileComponent" Directory="INSTALLFOLDER">
+      <File Source="install_this_file\HelloWixFile.txt"/>
+    </Component>
+
+    <!-- Add feature the refer to added component (can contein a set of component) -->
+    <Feature Id="MainFeature" Title="HelloWixFeature" Level="1">
+      <ComponentRef Id="TextFileComponent"/>
+    </Feature>
+    
+  </Product>
+</Wix>
+ 
